@@ -10,13 +10,15 @@ app.use(bodyParser.urlencoded({
   extended: true
 }));
 
-let channel_id, message;
-let helpList = "circled: ⓐⓑⓒ\rcircledNeg: 🅐🅑🅒\rfullWidth: ａｂｃ\rmathBold: 𝐚𝐛𝐜\rmathBoldFraktur: 𝖆𝖇𝖈\rmathBoldItalic: 𝒂𝒃𝒄\rmathBoldScript: 𝓪𝓫𝓬\rmathDouble: 𝕒𝕓𝕔\rmathMono: 𝚊𝚋𝚌\rmathSans: 𝖺𝖻𝖼\rmathSansBold: 𝗮𝗯𝗰\rmathSansBoldItalic: 𝙖𝙗𝙘\rmathSansItalic: 𝘢𝘣𝘤\rparenthesized: ⒜⒝⒞\rsquared: 🄰🄱🄲\rsquaredNeg: 🅰🅱🅲\rrockDots: äḅċ\rsmallCaps: ᴀʙᴄ\rstroked: Ⱥƀȼ\rinverted: ɐqɔ\rreversed: Adↄ-\r";
+// let channel_id, message;
+const helpList = "circled: ⓐⓑⓒ\rcircledNeg: 🅐🅑🅒\rfullWidth: ａｂｃ\rmathBold: 𝐚𝐛𝐜\rmathBoldFraktur: 𝖆𝖇𝖈\rmathBoldItalic: 𝒂𝒃𝒄\rmathBoldScript: 𝓪𝓫𝓬\rmathDouble: 𝕒𝕓𝕔\rmathMono: 𝚊𝚋𝚌\rmathSans: 𝖺𝖻𝖼\rmathSansBold: 𝗮𝗯𝗰\rmathSansBoldItalic: 𝙖𝙗𝙘\rmathSansItalic: 𝘢𝘣𝘤\rparenthesized: ⒜⒝⒞\rsquared: 🄰🄱🄲\rsquaredNeg: 🅰🅱🅲\rrockDots: äḅċ\rsmallCaps: ᴀʙᴄ\rstroked: Ⱥƀȼ\rinverted: ɐqɔ\rreversed: Adↄ-\r";
+const helpListIndex = "circled,circledNeg,fullWidth,mathBold,mathBoldFraktur,mathBoldItalic,mathBoldScript,mathDouble,mathMono,mathSans,mathSansBold,mathSansBoldItalic,mathSansItalic,parenthesized,squared,squaredNeg,rockDots,smallCaps,stroked,inverted,reversed".split(",");
 
 app.post("/slack/request", (req, res) => {
-  // res.status(200).end();
+  res.status(200);
   var type = req.body.text.split(" ")[0];
   var text = req.body.text.split(" ").slice(1).join(" ");
+  var user = req.body.user_name;
 
   if (type == "help") {
     var obj = {
@@ -41,17 +43,10 @@ app.post("/slack/request", (req, res) => {
     res.send(obj)
   } else {
 
-
-
+  // IF MESSAGE REQUEST
     var styledText = toUnicode(text, type);
-
-    channel_id = req.body.channel_id;
-    message = styledText;
-
-    console.log(req.body);
-    // console.log(type);
-    // console.log(text);
-    // console.log(styledText);
+    var style = type;
+    console.log(`${user} requesting "${text}" in ${style} style`);
 
     var obj = {
       "blocks": [{
@@ -69,23 +64,23 @@ app.post("/slack/request", (req, res) => {
             "text": "Send styled text",
             "emoji": true
           },
-          "value": "send_text"
+          "value": styledText
         }]
       }]
     }
     res.send(obj);
-
   }
 })
 
 app.post("/slack/interaction", (req, res) => {
-  res.status(200).end();
+  res.status(200);
   var payload = JSON.parse(req.body.payload);
-  // console.log(payload);
-  // console.log(JSON.stringify(JSON.parse(payload), null, 4));
+  var channel = payload.container.channel_id;
+  var message = payload.actions[0].value;
 
+  // Post message as user
   var obj = {
-    "channel": channel_id,
+    "channel": channel,
     "text": message,
     "as_user": true,
   };
@@ -100,27 +95,27 @@ app.post("/slack/interaction", (req, res) => {
     url: "https://slack.com/api/chat.postMessage"
   };
 
-  axios.post(payload.response_url, {
-      "delete_original": "true"
-    })
+  axios(options)
     .then(res => {
-      console.log("Status: " + res.statusCode);
+      console.log("Successfully posted message: " + message);
     })
     .catch(error => {
       console.log(error);
     })
 
-  axios(options)
+  // delete original
+  axios.post(payload.response_url, {
+      "delete_original": "true"
+    })
     .then(res => {
-      console.log("Status: " + res.statusCode);
-      // console.log(res.data);
+      console.log("Deleting confirmation block");
     })
     .catch(error => {
       console.log(error);
     })
 })
 
-
-app.listen(process.env.PORT || 8080, function() {
-  console.log("Listening on port");
+var port = process.env.PORT || 8080;
+app.listen(port, function() {
+  console.log("Listening on port " + port);
 });
