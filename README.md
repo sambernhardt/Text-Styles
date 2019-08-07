@@ -1,4 +1,4 @@
-# Funky Text Slack App
+# Text Style Slack App
 
 https://api.slack.com/apps/AM4EK1KL0
 http://127.0.0.1:4040/inspect/http
