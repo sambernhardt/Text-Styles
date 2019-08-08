@@ -13,7 +13,7 @@ exports.sendHelp = function(req, res) {
         "type": "section",
         "text": {
           "type": "plain_text",
-          "text": "Welcome to Funky Text! You can use any of the styles below in your slash command:",
+          "text": "Welcome to Text Styles! You can use any of the styles below in your slash command:",
           "emoji": true
         }
       },
