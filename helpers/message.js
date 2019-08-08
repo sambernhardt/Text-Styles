@@ -1,6 +1,7 @@
+var {styles} = require("../styles");
 const helpList = "circled: ⓐⓑⓒ\rcircledNeg: 🅐🅑🅒\rfullWidth: ａｂｃ\rmathBold: 𝐚𝐛𝐜\rmathBoldFraktur: 𝖆𝖇𝖈\rmathBoldItalic: 𝒂𝒃𝒄\rmathBoldScript: 𝓪𝓫𝓬\rmathDouble: 𝕒𝕓𝕔\rmathMono: 𝚊𝚋𝚌\rmathSans: 𝖺𝖻𝖼\rmathSansBold: 𝗮𝗯𝗰\rmathSansBoldItalic: 𝙖𝙗𝙘\rmathSansItalic: 𝘢𝘣𝘤\rparenthesized: ⒜⒝⒞\rsquared: 🄰🄱🄲\rsquaredNeg: 🅰🅱🅲\rrockDots: äḅċ\rsmallCaps: ᴀʙᴄ\rstroked: Ⱥƀȼ\rinverted: ɐqɔ\rreversed: Adↄ-\r";
-const helpListIndex = "circled,circledNeg,fullWidth,mathBold,mathBoldFraktur,mathBoldItalic,mathBoldScript,mathDouble,mathMono,mathSans,mathSansBold,mathSansBoldItalic,mathSansItalic,parenthesized,squared,squaredNeg,rockDots,smallCaps,stroked,inverted,reversed".split(",");
-const toUnicode = require("to-unicode");
+// const helpListIndex = "circled,circledNeg,fullWidth,mathBold,mathBoldFraktur,mathBoldItalic,mathBoldScript,mathDouble,mathMono,mathSans,mathSansBold,mathSansBoldItalic,mathSansItalic,parenthesized,squared,squaredNeg,rockDots,smallCaps,stroked,inverted,reversed".split(",");
+const {toUnicode} = require("./toUnicode");
 
 var blockList = true;
 
@@ -33,14 +34,15 @@ exports.handleMessageRequest = function(req, res) {
     var user = req.body.user_name;
 
     // if user hasn't specified a style, use that style
-    
+
       var text = req.body.text.split(" ").join(" ");
 
       var obj = {
         "blocks": []
       }
 
-      helpListIndex.forEach(styleName => {
+      for (styleName in styles) {
+
         var styledText = toUnicode(text, styleName);
 
         var block = {
@@ -61,7 +63,7 @@ exports.handleMessageRequest = function(req, res) {
         };
 
         obj.blocks.push(block)
-      })
+      }
 
       res.send(obj);
 }
