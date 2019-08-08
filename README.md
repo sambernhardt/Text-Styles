@@ -3,8 +3,7 @@
 
 After installing, just use the backslash command followed by your message `/style [message]`.
 
-
-
+![Demo](/demo.gif)
 
 References:
 http://slothsoft.net/UnicodeMapper/?lang=en-us
