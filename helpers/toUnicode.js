@@ -1,12 +1,7 @@
 var {styles} = require("../styles");
-
 var standard = "abcdefghijklmnopqrstuvwxyz".split("");
 
-var string = "hello";
-
-// console.log(styles);
-
-function toUnicode(string, style) {
+exports.toUnicode = function(string, style) {
   var result = "";
   var styleAlphabet = styles[style];
 
@@ -27,8 +22,6 @@ function toUnicode(string, style) {
 
   return result;
 }
-
-console.log(toUnicode("hello! how are you?", "Superscript"));
 
 function getLetter52(alphabet, index) {
   index = index * 2;
