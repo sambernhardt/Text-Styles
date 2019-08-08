@@ -31,7 +31,9 @@ exports.handleMessageRequest = function(req, res) {
 
     // IF MESSAGE REQUEST
     var user = req.body.user_name;
-    if (blockList) {
+
+    // if user hasn't specified a style, use that style
+    
       var text = req.body.text.split(" ").join(" ");
 
       var obj = {
@@ -62,34 +64,4 @@ exports.handleMessageRequest = function(req, res) {
       })
 
       res.send(obj);
-
-    } else {
-      var style = req.body.text.split(" ")[0];
-      var text = req.body.text.split(" ").slice(1).join(" ");
-      var styledText = toUnicode(text, style);
-
-      var obj = {
-        "blocks": [
-          {
-            "type": "section",
-            "text": {
-              "type": "mrkdwn",
-              "text": "You requested that we convert: *" + styledText + "* with the style: _" + style + "_"
-            }
-          }, {
-            "type": "actions",
-            "elements": [{
-              "type": "button",
-              "text": {
-                "type": "plain_text",
-                "text": "Send styled text",
-                "emoji": true
-              },
-              "value": styledText
-            }]
-          }
-        ]
-      }
-      res.send(obj);
-    }
 }
