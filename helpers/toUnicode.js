@@ -19,7 +19,6 @@ exports.toUnicode = function(string, style) {
         result += letter;
       }
   }
-
   return result;
 }
 

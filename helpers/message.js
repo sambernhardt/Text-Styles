@@ -1,12 +1,13 @@
 var {styles} = require("../styles");
-const helpList = "circled: ⓐⓑⓒ\rcircledNeg: 🅐🅑🅒\rfullWidth: ａｂｃ\rmathBold: 𝐚𝐛𝐜\rmathBoldFraktur: 𝖆𝖇𝖈\rmathBoldItalic: 𝒂𝒃𝒄\rmathBoldScript: 𝓪𝓫𝓬\rmathDouble: 𝕒𝕓𝕔\rmathMono: 𝚊𝚋𝚌\rmathSans: 𝖺𝖻𝖼\rmathSansBold: 𝗮𝗯𝗰\rmathSansBoldItalic: 𝙖𝙗𝙘\rmathSansItalic: 𝘢𝘣𝘤\rparenthesized: ⒜⒝⒞\rsquared: 🄰🄱🄲\rsquaredNeg: 🅰🅱🅲\rrockDots: äḅċ\rsmallCaps: ᴀʙᴄ\rstroked: Ⱥƀȼ\rinverted: ɐqɔ\rreversed: Adↄ-\r";
-// const helpListIndex = "circled,circledNeg,fullWidth,mathBold,mathBoldFraktur,mathBoldItalic,mathBoldScript,mathDouble,mathMono,mathSans,mathSansBold,mathSansBoldItalic,mathSansItalic,parenthesized,squared,squaredNeg,rockDots,smallCaps,stroked,inverted,reversed".split(",");
 const {toUnicode} = require("./toUnicode");
 
-var blockList = true;
-
-
 exports.sendHelp = function(req, res) {
+  var string = "";
+
+  for (var style in styles) {
+    string += `*${style}:* ${toUnicode("abc", style)}\n`
+  }
+
   var obj = {
     "blocks": [{
         "type": "section",
@@ -20,7 +21,7 @@ exports.sendHelp = function(req, res) {
         "type": "section",
         "text": {
           "type": "mrkdwn",
-          "text": helpList
+          "text": string
         }
       }
     ]
