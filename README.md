@@ -7,3 +7,6 @@ https://qaz.wtf/u/convert.cgi?text=abcdefghijklmnopqrstuvwxyz
 
 Future references:
 http://slothsoft.net/UnicodeMapper/?lang=en-us
+
+credits to:
+https://lingojam.com
