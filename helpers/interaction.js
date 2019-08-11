@@ -34,15 +34,15 @@ exports.handleInteraction = function(req, res) {
         console.log("Successfully posted message: " + message);
 
         // delete original
-        // axios.post(payload.response_url, {
-        //     "delete_original": "true"
-        //   })
-        //   .then(res => {
-        //     console.log("Deleting confirmation block");
-        //   })
-        //   .catch(error => {
-        //     console.log(error);
-        //   })
+        axios.post(payload.response_url, {
+            "delete_original": "true"
+          })
+          .then(res => {
+            console.log("Deleting confirmation block");
+          })
+          .catch(error => {
+            console.log(error);
+          })
       })
       .catch(error => {
         console.log(error);
