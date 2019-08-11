@@ -7,7 +7,7 @@ const firebaseAdmin = require('firebase-admin');
 
 const {sendHelp, handleMessageRequest} = require('./helpers/message.js');
 const {handleInteraction} = require('./helpers/interaction.js');
-const {handleOauth, writeToken, getToken} = require('./helpers/oauth.js');
+const {handleOauth, getToken} = require('./helpers/oauth.js');
 require("dotenv").config();
 
 // SETUP
@@ -16,7 +16,10 @@ app.use(bodyParser.urlencoded({
   extended: true
 }));
 firebaseAdmin.initializeApp({
-  credential: firebaseAdmin.credential.applicationDefault(),
+  credential: firebaseAdmin.credential.cert({
+    "private_key": process.env.FIREBASE_PRIVATE_KEY,
+    "client_email": process.env.FIREBASE_CLIENT_EMAIL,
+  }),
   databaseURL: 'https://text-styles-slack-bot.firebaseio.com'
 });
 
