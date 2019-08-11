@@ -1,6 +1,7 @@
 const request = require("request");
 const firebaseAdmin = require('firebase-admin');
 
+
 exports.handleOauth = function(req, res) {
 
   let data = {
@@ -40,7 +41,7 @@ exports.handleOauth = function(req, res) {
 
 }
 
-exports.writeToken = function(workspaceID, data, callback) {
+function writeToken(workspaceID, data, callback) {
   firebaseAdmin.database().ref('workspaces/' + workspaceID).set(data, callback);
 }
 

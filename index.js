@@ -22,8 +22,9 @@ firebaseAdmin.initializeApp({
 
 app.post("/slack/request", (req, res) => {
   res.status(200);
+  var firstWord = req.body.text.split(" ")[0];
 
-  if (req.body.text.split(" ")[0] == "help") {
+  if (firstWord == "help") {
     sendHelp(req,res);
   } else {
     handleMessageRequest(req,res);
