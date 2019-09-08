@@ -1,5 +1,11 @@
 const request = require("request");
-const firebaseAdmin = require('firebase-admin');
+const dateFormat = require("dateformat");
+
+// LowDB
+const low = require("lowdb");
+const FileSync = require("lowdb/adapters/FileSync");
+const adapter = new FileSync('db.json');
+const db = low(adapter);
 
 
 exports.handleOauth = function(req, res) {
@@ -26,14 +32,17 @@ exports.handleOauth = function(req, res) {
         if (!error && response.statusCode == 200) {
           let teamDomain = JSON.parse(body).team.domain;
           let teamID = JSON.parse(body).team.id;
+          const date = new Date();
 
-          writeToken(teamID, {
+          writeToken({
+            id: teamID,
             token: token,
-            domain: teamDomain
+            domain: teamDomain,
+            date_added: date.getTime()
           });
-          console.log(`Wrote token with ID: ${teamID} and domain ${teamDomain}`);
 
-          res.redirect('http://' + teamDomain + '.slack.com');
+          res.redirect('https://mothcoclothing.slack.com/apps/AM4EK1KL0-text-styles');
+          // res.redirect('http://' + teamDomain + '.slack.com');
         }
       });
     }
@@ -41,14 +50,20 @@ exports.handleOauth = function(req, res) {
 
 }
 
-function writeToken(workspaceID, data, callback) {
-  firebaseAdmin.database().ref('workspaces/' + workspaceID).set(data, callback);
+function writeToken(data) {
+  var existingEntry = db.get("workspaces").find({id: data.id}).value();
+
+  if (!existingEntry) {
+    db.get("workspaces").push(data).write();
+    console.log(`Wrote token with ID: ${data.id} and domain ${data.domain}`);
+  } else {
+    var now = new Date(existingEntry.date_added);
+    var date = dateFormat(now, "dddd, mmmm, dS, yyyy, at h:MM:ss TT")
+    console.log(`The workspace: ${data.domain}) already has a database entry that was created on ` + date);
+  }
 }
 
 exports.getToken = function(workspaceID, callback) {
-  firebaseAdmin.database().ref('workspaces/'+workspaceID).once('value')
-    .then(function(snapshot) {
-      var data = snapshot.val();
-      callback(data);
-    })
+  var entry = db.get("workspaces").find({id: workspaceID}).value();
+  callback(entry)
 }

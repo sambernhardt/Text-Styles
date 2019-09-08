@@ -38,7 +38,7 @@ exports.handleInteraction = function(req, res) {
             "delete_original": "true"
           })
           .then(res => {
-            console.log("Deleting confirmation block");
+            // console.log("Deleting confirmation block");
           })
           .catch(error => {
             console.log(error);

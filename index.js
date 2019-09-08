@@ -1,27 +1,23 @@
 const express = require("express");
 const bodyParser = require("body-parser");
-const axios = require("axios");
-
-// FIREBASE
-const firebaseAdmin = require('firebase-admin');
 
 const {sendHelp, handleMessageRequest} = require('./helpers/message.js');
 const {handleInteraction} = require('./helpers/interaction.js');
 const {handleOauth, getToken} = require('./helpers/oauth.js');
 require("dotenv").config();
 
-// SETUP
+// LowDB
+const low = require("lowdb");
+const FileSync = require("lowdb/adapters/FileSync");
+const adapter = new FileSync('db.json');
+const db = low(adapter);
+
+// Setup
 const app = express();
 app.use(bodyParser.urlencoded({
   extended: true
 }));
-firebaseAdmin.initializeApp({
-  credential: firebaseAdmin.credential.cert({
-    "private_key": process.env.FIREBASE_PRIVATE_KEY,
-    "client_email": process.env.FIREBASE_CLIENT_EMAIL,
-  }),
-  databaseURL: 'https://text-styles-slack-bot.firebaseio.com'
-});
+require("dotenv").config();
 
 app.post("/slack/request", (req, res) => {
   res.status(200);

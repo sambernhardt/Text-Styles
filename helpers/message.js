@@ -56,7 +56,7 @@ exports.handleMessageRequest = function(req, res) {
             "type": "button",
             "text": {
               "type": "plain_text",
-              "text": "Button",
+              "text": "Send Message",
               "emoji": true
             },
             "value": styledText
