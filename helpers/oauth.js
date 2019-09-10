@@ -34,8 +34,8 @@ exports.handleOauth = function(req, res) {
             date_added: date.getTime()
           });
 
-          res.redirect('https://mothcoclothing.slack.com/apps/AM4EK1KL0-text-styles');
-          // res.redirect('http://' + teamDomain + '.slack.com');
+          // res.redirect('https://mothcoclothing.slack.com/apps/AM4EK1KL0-text-styles');
+          res.redirect('http://' + teamDomain + '.slack.com');
         }
       });
     }
