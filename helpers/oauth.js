@@ -1,12 +1,6 @@
 const request = require("request");
 const dateFormat = require("dateformat");
-
-// LowDB
-const low = require("lowdb");
-const FileSync = require("lowdb/adapters/FileSync");
-const adapter = new FileSync('db.json');
-const db = low(adapter);
-
+const firebaseAdmin = require('firebase-admin');
 
 exports.handleOauth = function(req, res) {
 
@@ -47,23 +41,35 @@ exports.handleOauth = function(req, res) {
       });
     }
   })
-
 }
 
-function writeToken(data) {
-  var existingEntry = db.get("workspaces").find({id: data.id}).value();
-
-  if (!existingEntry) {
-    db.get("workspaces").push(data).write();
-    console.log(`Wrote token with ID: ${data.id} and domain ${data.domain}`);
-  } else {
-    var now = new Date(existingEntry.date_added);
-    var date = dateFormat(now, "dddd, mmmm, dS, yyyy, at h:MM:ss TT")
-    console.log(`The workspace: ${data.domain}) already has a database entry that was created on ` + date);
-  }
+function writeToken(workspaceID, data, callback) {
+  firebaseAdmin.database().ref('workspaces/' + workspaceID).set(data, callback);
 }
 
 exports.getToken = function(workspaceID, callback) {
-  var entry = db.get("workspaces").find({id: workspaceID}).value();
-  callback(entry)
+  firebaseAdmin.database().ref('workspaces/'+workspaceID).once('value')
+    .then(function(snapshot) {
+      var data = snapshot.val();
+      callback(data);
+    })
 }
+
+
+// function writeToken(data) {
+//   var existingEntry = db.get("workspaces").find({id: data.id}).value();
+//
+//   if (!existingEntry) {
+//     db.get("workspaces").push(data).write();
+//     console.log(`Wrote token with ID: ${data.id} and domain ${data.domain}`);
+//   } else {
+//     var now = new Date(existingEntry.date_added);
+//     var date = dateFormat(now, "dddd, mmmm, dS, yyyy, at h:MM:ss TT")
+//     console.log(`The workspace: ${data.domain}) already has a database entry that was created on ` + date);
+//   }
+// }
+//
+// exports.getToken = function(workspaceID, callback) {
+//   var entry = db.get("workspaces").find({id: workspaceID}).value();
+//   callback(entry)
+// }
