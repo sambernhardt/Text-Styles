@@ -17,8 +17,8 @@ app.use(bodyParser.urlencoded({
 }));
 firebaseAdmin.initializeApp({
   credential: firebaseAdmin.credential.cert({
-    "private_key": process.env.FIREBASE_PRIVATE_KEY.replace(/\\n/g, '\n'),
-    "client_email": process.env.FIREBASE_CLIENT_EMAIL,
+    privateKey: process.env.FIREBASE_PRIVATE_KEY.replace(/\\n/g, '\n'),
+    clientEmail: process.env.FIREBASE_CLIENT_EMAIL,
   }),
   databaseURL: 'https://text-styles-slack-bot.firebaseio.com'
 });
@@ -37,6 +37,10 @@ app.post("/slack/request", (req, res) => {
 app.post("/slack/interaction", (req, res) => {
   handleInteraction(req,res);
 })
+
+app.get('/', function(req, res){
+  res.send("Working!")
+});
 
 app.get('/oauth', function(req, res){
   handleOauth(req,res);
