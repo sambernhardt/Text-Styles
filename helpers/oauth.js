@@ -28,8 +28,7 @@ exports.handleOauth = function(req, res) {
           let teamID = JSON.parse(body).team.id;
           const date = new Date();
 
-          writeToken({
-            id: teamID,
+          writeToken(teamID, {
             token: token,
             domain: teamDomain,
             date_added: date.getTime()
@@ -43,8 +42,10 @@ exports.handleOauth = function(req, res) {
   })
 }
 
-function writeToken(workspaceID, data, callback) {
-  firebaseAdmin.database().ref('workspaces/' + workspaceID).set(data, callback);
+function writeToken(id, data) {
+  firebaseAdmin.database().ref('workspaces/' + id).set(data, function() {
+    console.log(`Wrote token with ID: ${id} and domain ${data.domain}`);
+  });
 }
 
 exports.getToken = function(workspaceID, callback) {
@@ -54,22 +55,3 @@ exports.getToken = function(workspaceID, callback) {
       callback(data);
     })
 }
-
-
-// function writeToken(data) {
-//   var existingEntry = db.get("workspaces").find({id: data.id}).value();
-//
-//   if (!existingEntry) {
-//     db.get("workspaces").push(data).write();
-//     console.log(`Wrote token with ID: ${data.id} and domain ${data.domain}`);
-//   } else {
-//     var now = new Date(existingEntry.date_added);
-//     var date = dateFormat(now, "dddd, mmmm, dS, yyyy, at h:MM:ss TT")
-//     console.log(`The workspace: ${data.domain}) already has a database entry that was created on ` + date);
-//   }
-// }
-//
-// exports.getToken = function(workspaceID, callback) {
-//   var entry = db.get("workspaces").find({id: workspaceID}).value();
-//   callback(entry)
-// }
