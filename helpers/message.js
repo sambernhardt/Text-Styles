@@ -47,49 +47,67 @@ exports.handleMessageRequest = function (req, res) {
   // if user hasn't specified a style, use that style
   var text = req.body.text.split(" ").join(" ");
   var obj = {
-    "blocks": []
+    "blocks": [
+      {
+        "type": "actions",
+        "elements": []
+      }
+    ]
   }
   for (styleName in styles) {
 
     var styledText = toUnicode(text, styleName);
 
+    // var block = {
+    //   "type": "section",
+    //   "text": {
+    //     "type": "mrkdwn",
+    //     "text": `*${styleName}:* ${styledText}`
+    //   },
+    //   "accessory": {
+    //     "type": "button",
+    //     "text": {
+    //       "type": "plain_text",
+    //       "text": "Send Message",
+    //       "emoji": true
+    //     },
+    //     "value": styledText
+    //   }
+    // };
     var block = {
+      "type": "button",
+      "text": {
+        "type": "plain_text",
+        "text": styledText,
+        "emoji": true
+      },
+      "value": styledText
+    }
+
+    obj.blocks[0]["elements"].push(block)
+  }
+
+  obj.blocks.push(
+    {
+      "type": "divider"
+    },
+    {
       "type": "section",
       "text": {
         "type": "mrkdwn",
-        "text": `*${styleName}:* ${styledText}`
+        "text": "Need help? Use `/style help`"
       },
       "accessory": {
         "type": "button",
         "text": {
           "type": "plain_text",
-          "text": "Send Message",
+          "text": "Discard",
           "emoji": true
         },
-        "value": styledText
+        "style": "danger",
+        "value": "close"
       }
-    };
-
-    obj.blocks.push(block)
-  }
-
-  obj.blocks.push({
-    "type": "divider"
-  }, {
-    "type": "section",
-    "text": {
-      "type": "mrkdwn",
-      "text": " "
-    },
-    "accessory": {
-      "type": "button",
-      "text": {
-        "type": "plain_text",
-        "text": "Cancel",
-        "emoji": true
-      },
-      "value": "close"
     }
-  })
+  )
   res.send(obj);
 }
