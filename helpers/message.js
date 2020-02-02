@@ -44,7 +44,6 @@ exports.sendHelp = function (req, res) {
 
 exports.handleMessageRequest = function (req, res) {
   var user = req.body.user_name;
-  // if user hasn't specified a style, use that style
   var text = req.body.text.split(" ").join(" ");
   var obj = {
     "blocks": [
@@ -54,26 +53,15 @@ exports.handleMessageRequest = function (req, res) {
       }
     ]
   }
+
   for (styleName in styles) {
-
-    var styledText = toUnicode(text, styleName);
-
-    // var block = {
-    //   "type": "section",
-    //   "text": {
-    //     "type": "mrkdwn",
-    //     "text": `*${styleName}:* ${styledText}`
-    //   },
-    //   "accessory": {
-    //     "type": "button",
-    //     "text": {
-    //       "type": "plain_text",
-    //       "text": "Send Message",
-    //       "emoji": true
-    //     },
-    //     "value": styledText
-    //   }
-    // };
+    let styledText;
+    if (text.match(/\*[^\*]*\*/).length > 0) {
+      var pulledText = text.match(/\*[^\*]*\*/)[0].replace(/\*/g,"");
+      styledText = text.replace(/\*[^\*]*\*/, toUnicode(pulledText, styleName));
+    } else {
+      styledText = toUnicode(text, styleName);
+    }
     var block = {
       "type": "button",
       "text": {
@@ -83,7 +71,6 @@ exports.handleMessageRequest = function (req, res) {
       },
       "value": styledText
     }
-
     obj.blocks[0]["elements"].push(block)
   }
 
