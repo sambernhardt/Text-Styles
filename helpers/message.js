@@ -66,5 +66,24 @@ exports.handleMessageRequest = function(req, res) {
         obj.blocks.push(block)
       }
 
+      obj.blocks.push({
+        "type": "divider"
+      },
+      {
+        "type": "section",
+        "text": {
+          "type": "mrkdwn",
+          "text": " "
+        },
+        "accessory": {
+          "type": "button",
+          "text": {
+            "type": "plain_text",
+            "text": "Cancel",
+            "emoji": true
+          },
+          "value": "cancel"
+        }
+      })
       res.send(obj);
 }
