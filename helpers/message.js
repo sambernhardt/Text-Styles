@@ -2,42 +2,37 @@ var {styles} = require("../styles");
 const {toUnicode} = require("./toUnicode");
 
 exports.sendHelp = function (req, res) {
-  var string = "";
-
-  for (var style in styles) {
-    string += `*${style}:* ${toUnicode("abc", style)}\n`
-  }
-
-  var obj = {
-    "blocks": [
-      {
-        "type": "section",
-        "text": {
-          "type": "plain_text",
-          "text": "Welcome to Text Styles! You can use any of the styles below in your slash command:",
-          "emoji": true
+    var obj = {
+      "blocks": [
+        {
+          "type": "section",
+          "text": {
+            "type": "mrkdwn",
+            "text": "Type your message after the command and select one of the styled options to send your message.\nEg. `/style this is cool` => `𝖙𝖍𝖎𝖘 𝖎𝖘 𝖈𝖔𝖔𝖑`"
+          }
+        },
+        {
+          "type": "section",
+          "text": {
+            "type": "mrkdwn",
+            "text": "To only style 𝖘𝖕𝖊𝖈𝖎𝖋𝖎𝖈 words in your message, bold those words in your slash command.\nEg. `/style this is *cool*` => `this is 𝖈𝖔𝖔𝖑`"
+          }
+        },
+        {
+          "type": "actions",
+          "elements": [
+            {
+              "type": "button",
+              "text": {
+                "type": "plain_text",
+                "text": "Got it!",
+                "emoji": true
+              },
+              "value": "close"
+            }
+          ]
         }
-      },
-      {
-        "type": "section",
-        "text": {
-          "type": "mrkdwn",
-          "text": string
-        }
-      },
-      {
-        "type": "actions",
-        "elements": [{
-					"type": "button",
-					"text": {
-						"type": "plain_text",
-						"text": "Got it",
-						"emoji": true
-					},
-					"value": "close"
-				}]
-      }
-    ]
+      ]
   }
   res.send(obj);
 }
@@ -56,7 +51,7 @@ exports.handleMessageRequest = function (req, res) {
 
   for (styleName in styles) {
     let styledText;
-    if (text.match(/\*[^\*]*\*/).length > 0) {
+    if (text.match(/\*[^\*]*\*/)) {
       var pulledText = text.match(/\*[^\*]*\*/)[0].replace(/\*/g,"");
       styledText = text.replace(/\*[^\*]*\*/, toUnicode(pulledText, styleName));
     } else {
